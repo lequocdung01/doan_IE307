@@ -17,5 +17,4 @@ const  Main=()=> {
     </Tab.Navigator>
   );
 }
-
 export default Main
