@@ -7,4 +7,4 @@ return(
 <NavigationContainer>
 <Main />
 </NavigationContainer>
-);}
+)}
