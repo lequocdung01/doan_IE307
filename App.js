@@ -4,6 +4,7 @@ import Main from './screens/authStack';
 
 export default function App() {
 return(
+    
 <NavigationContainer>
 <Main />
 </NavigationContainer>
