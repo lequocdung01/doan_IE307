@@ -7,8 +7,6 @@ import Search from './Search';
 import Storages from './Storages';
 import Profile from './Profile';
 
-const Tab = createBottomTabNavigator();
-
 const Main = () => {
   const Tab = createBottomTabNavigator();
   return (
@@ -55,3 +53,4 @@ const Main = () => {
   );
 }
 export default Main
+//123
