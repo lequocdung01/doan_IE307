@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, ScrollView, TextInput,Image, FlatList,SectionList } from 'react-native';
+import { Text, View, StyleSheet,  TextInput,Image, FlatList } from 'react-native';
 
 const postdata = [
     {
@@ -151,3 +151,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 })
+
+export default Search
