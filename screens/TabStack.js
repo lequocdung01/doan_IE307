@@ -6,8 +6,8 @@ import Home from './Home';
 import Search from './Search';
 import Storages from './Storages';
 import Profile from './Profile';
-import AuthStack from './AuthStack';
-
+import AuthStack from './authStack';
+import TopTabs from '../URL/TopTabs';
 const Main = () => {
   const Tab = createBottomTabNavigator();
   return (
@@ -46,7 +46,7 @@ const Main = () => {
       })
       }
     >
-      <Tab.Screen name="Home" component={Home} options={{ header: () => null }} />
+      <Tab.Screen name="Home" component={TopTabs} options={{ header: () => null }} />
       <Tab.Screen name="Search" component={Search} options={{ header: () => null }} />
       <Tab.Screen name="Storages" component={AuthStack} options={{ header: () => null }} />
       <Tab.Screen name="Profile" component={Profile} options={{ header: () => null }} />
