@@ -351,7 +351,7 @@ const HomeScreen = () => {
         </View>
         
       </View>
-      {/* <View style={styles.content}>
+      <View style={styles.content}>
           <View>
             <Text style={styles.textHeadList}>Bạn đang thèm gì?</Text>
             <Text>Không chắc? Tiếp tục tạo bất ngờ</Text>
@@ -368,8 +368,8 @@ const HomeScreen = () => {
             <Icon style={styles.icon} name={"search"} color={'#000'} size={15} />
             <Text>Tạo bất ngờ cho tôi!</Text>
           </TouchableOpacity>
-      </View> */}
-      {/* <View style={styles.content}>
+      </View>
+      <View style={styles.content}>
         <View>
           <Text style={styles.textHeadList}>Khám phá xem thứ gì đang trong mùa nào!</Text>
           
@@ -399,14 +399,15 @@ const HomeScreen = () => {
           
         </View>
       
-      </View> */}
-      {/* <View style={styles.content}>
+      </View>
+      <View style={styles.content}>
         <View>
           <Text style={styles.textHeadList}>Tham Gia Lễ Hội Bếp</Text>
           
             <View style={styles.row}>
             
                 <FlatList
+                  scrollEnabled={false}
                   data = {festival}
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
@@ -434,11 +435,12 @@ const HomeScreen = () => {
           
         </View>
       
-      </View> */}
-      {/* <View style={styles.content}>
+      </View>
+      <View style={styles.content}>
         <Text style={styles.textHeadList}>Món mới nhất</Text>
         
             <FlatList
+              scrollEnabled={false}
               data = {postsData}
               showsHorizontalScrollIndicator={false}
               renderItem = {({item}) => (
@@ -485,7 +487,7 @@ const HomeScreen = () => {
               
             
           
-      </View>  */}
+      </View> 
   </ScrollView>
       
     
