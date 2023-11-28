@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 const TopTabs = () => {
   return (
     <TopTab.Navigator
-        tabBarOptions={{
+    screenOptions={{
             style: {
             paddingTop: 30, // Điều chỉnh giá trị marginTop ở đây
             },

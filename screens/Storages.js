@@ -60,7 +60,7 @@ const renderImage = ({ item }) => (
 const Storages = ({ navigation }) => {
     const numberOfItemsToShow = 3;
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.titler_container}>
                 <Image source={{ uri: 'https://5.imimg.com/data5/ANDROID/Default/2021/1/WP/TS/XB/27732288/product-jpeg.jpg' }} style={styles.logo} />
                 <Text style={styles.text_title}>Lưu trữ ghi chú vào bếp của bạn</Text>
@@ -84,7 +84,7 @@ const Storages = ({ navigation }) => {
                     horizontal={true}
                 />
             </View>
-        </ScrollView>
+        </View>
     )
 }
 

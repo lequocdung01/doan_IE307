@@ -23,7 +23,7 @@ const Main = () => {
             iconName = 'search'
             size = focused ? 28 : 28
             color = focused ? '#4190f4' : '#808080'
-          } else if (route.name === 'Storages') {
+          } else if (route.name === 'StoragesScreen') {
             iconName = 'plus-circle'
             size = focused ? 28 : 28
             color = focused ? '#4190f4' : '#808080'
@@ -48,7 +48,7 @@ const Main = () => {
     >
       <Tab.Screen name="Home" component={TopTabs} options={{ header: () => null }} />
       <Tab.Screen name="Search" component={Search} options={{ header: () => null }} />
-      <Tab.Screen name="Storages" component={AuthStack} options={{ header: () => null }} />
+      <Tab.Screen name="StoragesScreen" component={AuthStack} options={{ header: () => null }} />
       <Tab.Screen name="Profile" component={Profile} options={{ header: () => null }} />
     </Tab.Navigator>
   );

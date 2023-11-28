@@ -257,7 +257,7 @@ const HomeScreen = () => {
     </View>
   );
   return (
-    <ScrollView style = {styles.main}>
+    <View style = {styles.main}>
       <View style={styles.content}>
           
           <View style={styles.container}>
@@ -486,7 +486,7 @@ const HomeScreen = () => {
             
           
       </View>
-  </ScrollView>
+  </View>
       
     
   );
