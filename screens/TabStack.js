@@ -2,12 +2,10 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Home from './Home';
 import Search from './Search';
-import Storages from './Storages';
-import Profile from './Profile';
 import AuthStack from './authStack';
 import TopTabs from '../URL/TopTabs';
+import ProAuthStack from './profileURL';
 const Main = () => {
   const Tab = createBottomTabNavigator();
   return (
@@ -49,7 +47,7 @@ const Main = () => {
       <Tab.Screen name="Home" component={TopTabs} options={{ header: () => null }} />
       <Tab.Screen name="Search" component={Search} options={{ header: () => null }} />
       <Tab.Screen name="Storages" component={AuthStack} options={{ header: () => null }} />
-      <Tab.Screen name="Profile" component={Profile} options={{ header: () => null }} />
+      <Tab.Screen name="Profile" component={ProAuthStack} options={{ header: () => null }} />
     </Tab.Navigator>
   );
 }

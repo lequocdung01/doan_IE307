@@ -14,6 +14,7 @@ const FlatSL = ({row,data,columns}) => {
   
   return (
     <FlatList
+          scrollEnabled={false}
           data = {rows}
           showsHorizontalScrollIndicator={false}
           renderItem = { ({item}) => (
