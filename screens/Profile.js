@@ -2,7 +2,8 @@ import React from 'react'
 import { Text, View, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 
-const Profile = () => {
+const Profile = ({navigation}) => {
+    
     return (
         <View style={styles.container}>
             <View style={styles.login_account}>
@@ -17,16 +18,16 @@ const Profile = () => {
                     <Image source={require('../assets/vn.png')} style={styles.vn_image}/>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={styles.text}>Điều Khoản Bảo Mật</Text>
+                    <Text style={styles.text} onPress={() => navigation.navigate('ChinhSach')}>Điều Khoản Bảo Mật</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={styles.text}>Điều Khoản Dịch Vụ</Text>
+                    <Text style={styles.text} onPress={() => navigation.navigate('DieuKhoan')}>Điều Khoản Dịch Vụ</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={styles.text}>Hướng Dẫn Dành Cho Cộng Đồng Cookpad</Text>
+                    <Text style={styles.text} onPress={() => navigation.navigate('HuongDan')}>Hướng Dẫn Dành Cho Cộng Đồng Cookpad</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={styles.text}>Những Câu Hỏi Thường Gặp</Text>
+                    <Text style={styles.text} onPress={() => navigation.navigate('CauHoiThuongGap')}>Những Câu Hỏi Thường Gặp</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Text style={styles.text}>Liên Hệ</Text>
