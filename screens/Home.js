@@ -148,7 +148,7 @@ const festival = [
     time:"6 thg 11 - 4 thg 12"
   },
 ]
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [selectedId, setSelectedId] = useState([]);
   const [count,setCount] = useState(false);
   const [posts, setPosts] = useState([...postsData]);
@@ -256,6 +256,9 @@ const HomeScreen = () => {
       
     </View>
   );
+  const navigateToBaiViet = (selectedProduct) => {
+    navigation.navigate('BaiViet', { product: selectedProduct });
+};
   return (
     <ScrollView style = {styles.main}>
       <View style={styles.content}>
@@ -299,7 +302,7 @@ const HomeScreen = () => {
             
             {
               posts.map(Post => (
-                <View style={styles.post} key={Post.id}>
+                <TouchableOpacity style={styles.post} key={Post.id} onPress={()=>navigation.navigate("BaiViet")}>
                   
                   <View style={styles.headerPost}>
                     <ImageBackground source={{uri:Post.contenImange}} style={styles.postImage} imageStyle={{ borderTopLeftRadius: 15, borderTopRightRadius: 15, }}>
@@ -335,7 +338,7 @@ const HomeScreen = () => {
                     </View>
                   </View>
                   
-                </View>
+                </TouchableOpacity>
                 
               ))
               
@@ -361,6 +364,7 @@ const HomeScreen = () => {
               row = {4}
               data = {postsData}
               columns = {2}
+              
             />
             
           </View>
@@ -385,7 +389,7 @@ const HomeScreen = () => {
                             <Text style={styles.textListThem}>{item.type}</Text>
                           </ImageBackground>
 
-                              <FlatSL row = {"3"} data = {postsData} columns = {"3"}/>
+                              <FlatSL row = {"3"} data = {postsData} columns = {"3"} toggleExerciseSelection={navigation.navigate("BaiViet")}/>
                       </TouchableOpacity > 
                   )}
                   keyExtractor = {(item) => item.id}
@@ -424,11 +428,12 @@ const HomeScreen = () => {
                                 renderItem={renderItem}
                                 keyExtractor={(item) => item.festival}
                               />
-                            <FlatSL row = {"3"} data = {postsData} columns = {"3"}/>
+                            <FlatSL row = {"3"} data = {postsData} columns = {"3"} toggleExerciseSelection={navigation.navigate("BaiViet")}/>
                       </TouchableOpacity > 
                   )}
                   
-                />
+       
+       />
             
             </View>
           
@@ -444,7 +449,7 @@ const HomeScreen = () => {
               data = {postsData}
               showsHorizontalScrollIndicator={false}
               renderItem = {({item}) => (
-                <View style={styles.postNew}>
+                <TouchableOpacity style={styles.postNew} onPress={()=>navigation.navigate("BaiViet")}>
                   
                   <View style={styles.headerPostNew}>
                     <Image source={{uri:item.contenImange}} style={styles.postImageNew}>
@@ -475,7 +480,7 @@ const HomeScreen = () => {
                   </View>
                   
                   
-                </View>
+                </TouchableOpacity>
                 
               )}
               keyExtractor = {(item) => item.id}
@@ -582,7 +587,7 @@ const styles = StyleSheet.create({
   },
   textHeadList:{
     fontSize:15,
-    fontWeight:'500',
+    fontWeight:"500",
   },
   itemListCB:{
     margin:10,
@@ -636,7 +641,7 @@ const styles = StyleSheet.create({
   },
   textListHeadFestival:{
     fontSize:20,
-    fontWeight:'500',
+    fontWeight:"500",
   },
   postNew:{
     
@@ -675,7 +680,7 @@ const styles = StyleSheet.create({
   },
   postTextNew:{
     fontSize: 18,
-    fontWeight:'500',
+    fontWeight:"bold",
     paddingLeft:10
   },
   textNew: {

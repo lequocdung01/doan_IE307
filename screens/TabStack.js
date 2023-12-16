@@ -6,6 +6,7 @@ import Search from './Search';
 import AuthStack from './authStack';
 import TopTabs from '../URL/TopTabs';
 import ProAuthStack from './profileURL';
+import StackHome from '../URL/StackHome';
 const Main = () => {
   const Tab = createBottomTabNavigator();
   return (
@@ -42,12 +43,12 @@ const Main = () => {
         tabBarLabelStyle: { fontSize: 12},
         // tabBarLabelStyle: { fontSize: 15,opacity: 0 },
       })
-      }
+      }s
     >
-      <Tab.Screen name="Home" component={TopTabs} options={{ header: () => null }} />
+      <Tab.Screen name="Home" component={StackHome} options={{ header: () => null }} />
       <Tab.Screen name="Search" component={Search} options={{ header: () => null }} />
       <Tab.Screen name="Storages" component={AuthStack} options={{ header: () => null }} />
-      <Tab.Screen name="Profile" component={ProAuthStack} options={{ header: () => null }} />
+      <Tab.Screen name="ProfileScreen" component={ProAuthStack} options={{ header: () => null }} />
     </Tab.Navigator>
   );
 }

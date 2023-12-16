@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image,TouchableOpacity, ScrollView,ImageBackground,Button,FlatList,TextInput } from 'react-native';
 
 
-const FlatSL = ({row,data,columns}) => {
+const FlatSL = ({row,data,columns,toggleExerciseSelection}) => {
   
   const itemsPerRow = 1;
   const rows = [];
@@ -18,7 +18,7 @@ const FlatSL = ({row,data,columns}) => {
           data = {rows}
           showsHorizontalScrollIndicator={false}
           renderItem = { ({item}) => (
-          <TouchableOpacity  style={styles.itemListThem} onPress={() => toggleExerciseSelection(item.type)}>
+          <TouchableOpacity  style={styles.itemListThem} onPress={() => toggleExerciseSelection}>
           {item.map((rowData) => (
                     <View  key={rowData.id}>
                       <ImageBackground source={{uri:rowData.contenImange}} style={styles.postImageThem} imageStyle={{ borderRadius: 15}}> 
