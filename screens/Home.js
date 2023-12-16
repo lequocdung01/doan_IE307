@@ -148,7 +148,7 @@ const festival = [
     time:"6 thg 11 - 4 thg 12"
   },
 ]
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [selectedId, setSelectedId] = useState([]);
   const [count,setCount] = useState(false);
   const [posts, setPosts] = useState([...postsData]);
@@ -299,7 +299,7 @@ const HomeScreen = () => {
             
             {
               posts.map(Post => (
-                <View style={styles.post} key={Post.id}>
+                <TouchableOpacity style={styles.post} key={Post.id} onPress={()=>navigation.navigate("BaiViet")}>
                   
                   <View style={styles.headerPost}>
                     <ImageBackground source={{uri:Post.contenImange}} style={styles.postImage} imageStyle={{ borderTopLeftRadius: 15, borderTopRightRadius: 15, }}>
@@ -335,7 +335,7 @@ const HomeScreen = () => {
                     </View>
                   </View>
                   
-                </View>
+                </TouchableOpacity>
                 
               ))
               
@@ -444,7 +444,7 @@ const HomeScreen = () => {
               data = {postsData}
               showsHorizontalScrollIndicator={false}
               renderItem = {({item}) => (
-                <View style={styles.postNew}>
+                <TouchableOpacity style={styles.postNew}  onPress={()=>navigation.navigate("BaiViet")}>
                   
                   <View style={styles.headerPostNew}>
                     <Image source={{uri:item.contenImange}} style={styles.postImageNew}>
@@ -475,7 +475,7 @@ const HomeScreen = () => {
                   </View>
                   
                   
-                </View>
+                </TouchableOpacity>
                 
               )}
               keyExtractor = {(item) => item.id}
