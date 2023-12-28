@@ -1,5 +1,14 @@
 import React from 'react'
-import { Text, View, Button, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import {
+    Text, View, Button, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, Alert,
+    RefreshControl, ActivityIndicator
+} from 'react-native';
+import { useAuth } from './AuthContext';
+import { useEffect, useState } from 'react';
+import Icon from 'react-native-vector-icons/Ionicons'
+import axios from 'axios';
+const trash_outline = 'trash-outline';
+const pencil_outline = 'pencil-outline';
 const postdata = [
     {
         id: 1,
@@ -58,9 +67,111 @@ const renderImage = ({ item }) => (
 )
 
 const Storages = ({ navigation }) => {
+    const [dsthucdon, getdstd] = useState([])
+    const [refreshing, setRefreshing] = useState(false)
+    const [totalDishes, setTotalDishes] = useState(0);
+    const [mealTypeCounts, setMealTypeCounts] = useState({});
+    const [foodProcessingTypeCounts, setFoodProcessingTypeCounts] = useState({});
+    const [userId, setUserId] = useState(null);
+    const { userId: contextUserId } = useAuth()
+    // console.log(userId)
+
+    const fetchData = async () => {
+        try {
+          if (userId) {
+            const response = await axios.get(`http://192.168.88.128:3000/api/getUserDish/${userId}`);
+            getdstd(response.data);
+          }
+        } catch (error) {
+          // handle error
+          // alert(error.message);
+        } finally {
+          setRefreshing(false);
+        }
+      };
+    
+      useEffect(() => {
+        setUserId(contextUserId);
+      }, [contextUserId]);
+    
+      useEffect(() => {
+        fetchData();
+    
+        const intervalId = setInterval(fetchData, 500);
+    
+        return () => clearInterval(intervalId);
+      }, [userId]);
+
+    useEffect(() => {
+        setTotalDishes(dsthucdon.length);
+    }, [dsthucdon]);
+
+    useEffect(() => {
+        // Tính số lượng món cho từng loại mealType
+        const counts = {};
+        dsthucdon.forEach(item => {
+            const mealType = item.mealType;
+            counts[mealType] = (counts[mealType] || 0) + 1;
+        });
+        setMealTypeCounts(counts);
+    }, [dsthucdon]);
+    useEffect(() => {
+        // Tính số lượng món cho từng loại foodProcessingType
+        const counts = {};
+        dsthucdon.forEach(item => {
+            const foodProcessingType = item.foodProcessingType;
+            counts[foodProcessingType] = (counts[foodProcessingType] || 0) + 1;
+        });
+        setFoodProcessingTypeCounts(counts);
+    }, [dsthucdon]);
+
+    const AlertDelete = (id) =>
+
+        Alert.alert(
+            "Cảnh báo",
+            "Bạn có muốn xóa món ăn không?",
+            [
+                {
+                    text: "Không",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Có", onPress: () => handleDelete(id) }
+            ],
+            { cancelable: false }
+        );
+
+
+    const handleDelete = async (id) => {
+        const data = await axios.delete(`http://192.168.88.128:3000/api/delete/${id}`);
+        if (data.data.success) {
+            getdstd(data.data.message);
+            alert(data.data.message);
+        }
+    };
+
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        fetchData();
+    };
+
+    const [numColumns, setNumColumns] = useState(3); // Set the initial number of columns
+
+    const handleNumColumnsChange = newNumColumns => {
+        // You might have a function to change the number of columns
+        setNumColumns(newNumColumns);
+    };
     const numberOfItemsToShow = 3;
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+        >
             <View style={styles.titler_container}>
                 <Image source={{ uri: 'https://5.imimg.com/data5/ANDROID/Default/2021/1/WP/TS/XB/27732288/product-jpeg.jpg' }} style={styles.logo} />
                 <Text style={styles.text_title}>Lưu trữ ghi chú vào bếp của bạn</Text>
@@ -71,20 +182,82 @@ const Storages = ({ navigation }) => {
                 </View>
             </View>
             <View>
+                <Text style={styles.text_item}>Món ăn của tôi </Text>
+                <Text style={styles.text_item}>Tổng số món ăn: {totalDishes}</Text>
+                <View style={styles.column}>
+                    <View>
+                        <Text style={styles.text_item}>Loại bữa ăn</Text>
+                        {Object.keys(mealTypeCounts).map((mealType, index) => (
+                            <View key={index} style={styles.mealTypeCountContainer}>
+                                <Text style={styles.mealTypeCountText}>{mealType}: {mealTypeCounts[mealType]}</Text>
+                            </View>
+                        ))}
+                    </View>
+                    <View>
+                        <Text style={styles.text_item}>Loại chế biến</Text>
+                        <FlatList
+                            scrollEnabled={false}
+                            data={Object.keys(foodProcessingTypeCounts)}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                <View key={item} style={styles.mealTypeCountContainer}>
+                                    <Text style={styles.mealTypeCountText}>
+                                        {item}: {foodProcessingTypeCounts[item]}
+                                    </Text>
+                                </View>
+                            )}
+                            numColumns={2}
+                        />
+                    </View>
+                </View>
+
+                <FlatList
+                    style={styles.myFood}
+                    scrollEnabled={false}
+                    data={dsthucdon.slice().reverse()}
+                    numColumns={numColumns}
+                    key={`flatlist_key_${numColumns}`}
+                    renderItem={({ item }) => (
+                        <View style={styles.item_myFood}>
+                            <TouchableOpacity onPress={() => navigation.navigate('BaiViet',
+                                {
+                                    id: item._id, name: item.foodName, Photo: item.foodPhoto, Processing: item.foodProcessing,
+                                    Ingredients: item.foodIngredients, Time: item.cookingTime, Feel: item.feel, FoodRations: item.foodRations
+                                })}>
+                                <Image source={{ uri: item.foodPhoto }} style={styles.Image_myFood} />
+                            </TouchableOpacity>
+                            <View style={styles.manageFood}>
+                                <TouchableOpacity style={styles.dl_manageFood} onPress={() => AlertDelete(item._id)}>
+                                    <Icon name={trash_outline} size={20}></Icon>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.edit_manageFood} onPress={() => navigation.navigate('UpdateDishes',
+                                    {
+                                        id: item._id, name: item.foodName, Photo: item.foodPhoto, Processing: item.foodProcessing, ProcessingType: item.foodProcessingType,
+                                        Ingredients: item.foodIngredients, Time: item.cookingTime, Feel: item.feel, FoodRations: item.foodRations, MealType: item.mealType
+                                    })}>
+                                    <Icon name={pencil_outline} size={20}></Icon>
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity>
+                                <Text style={styles.text_foodName}>{item.foodName}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                />
+            </View>
+            <View>
                 <Text style={styles.text_item}>Tham gia thử thách vào bếp </Text>
                 <FlatList
                     initialNumToRender={3}
                     data={postdata.slice(0, numberOfItemsToShow)}
                     style={styles.flatList}
-                    // data={postdata}
+
                     renderItem={renderImage}
                     keyExtractor={(item) => item.id}
-                    // numColumns={3}
-                    // key={'flatlist_key'}
                     horizontal={true}
                 />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -101,7 +274,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom:30,
+        paddingBottom: 30,
     },
     text_title: {
         paddingTop: 10,
@@ -120,11 +293,77 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 18,
     },
-    text_item:{
-        fontSize:18,
-        marginTop:10,
-        marginLeft:15,
-        marginBottom:15,
+    text_item: {
+        fontSize: 18,
+        marginTop: 10,
+        marginLeft: 15,
+        marginBottom: 5,
+    },
+    column: {
+        flex: 1,
+        marginHorizontal: 10,
+        flexDirection: 'row',
+    },
+    mealTypeCountContainer: {
+        backgroundColor: '#BBBBBB',
+        marginVertical: 5,
+        marginLeft: 15,
+        borderRadius: 8,
+    },
+    mealTypeCountText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        width: 100,
+        paddingLeft: 2,
+    },
+
+    myFood: {
+        marginLeft: 15,
+        marginRight: 10,
+        paddingTop: 10,
+        paddingLeft: 8,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+    },
+    Image_myFood: {
+        height: 110,
+        width: 110,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+
+    },
+    item_myFood: {
+        marginRight: 10,
+        marginBottom: 15,
+        backgroundColor: '#EEEEEE',
+        borderRadius: 8,
+        paddingBottom: 6,
+    },
+    manageFood: {
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    dl_manageFood: {
+        backgroundColor: '#FFFFFF',
+        paddingBottom: 5,
+        paddingTop: 5,
+        paddingLeft: 20,
+        paddingRight: 13,
+    },
+    edit_manageFood: {
+        backgroundColor: '#FFFFFF',
+        paddingBottom: 5,
+        paddingTop: 5,
+        paddingLeft: 13,
+        paddingRight: 20,
+    },
+    text_foodName: {
+        fontSize: 15,
+        paddingLeft: 6,
+        paddingTop: 5,
+        paddingRight: 7,
+        fontWeight: 'bold',
+        width: 112,
     },
     flatList: {
         height: 475,
@@ -137,22 +376,22 @@ const styles = StyleSheet.create({
         paddingLeft: 4,
         paddingRight: 4,
         borderRadius: 7,
-        paddingBottom:10,
+        paddingBottom: 10,
     },
-    text_name:{
-        fontSize:20 ,
+    text_name: {
+        fontSize: 20,
         fontWeight: 'bold',
         paddingLeft: 8,
-        paddingTop:10,
-        paddingBottom:15,
+        paddingTop: 10,
+        paddingBottom: 15,
     },
-    text_times:{
-        paddingLeft:8,
-        paddingBottom:7,
+    text_times: {
+        paddingLeft: 8,
+        paddingBottom: 7,
     },
-    text_number_of_dishes:{
-        paddingLeft:8,
-        paddingBottom:5,
+    text_number_of_dishes: {
+        paddingLeft: 8,
+        paddingBottom: 5,
     },
     food: {
         flexDirection: 'row',
@@ -167,7 +406,7 @@ const styles = StyleSheet.create({
     },
     text_nameFood: {
         paddingLeft: 7,
-        paddingRight:7,
+        paddingRight: 7,
         fontSize: 14,
         fontWeight: 'bold',
     },

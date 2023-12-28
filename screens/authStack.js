@@ -1,23 +1,29 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Storages from './Storages';
-import AddDishes from './AddDishes'
+import Storage from './Storages';
+import AddDishes from './AddDishes';
+import UpdateDishes from './UpdateDish';
 
 
 const Stack = createNativeStackNavigator();
 const AuthStack = () => {
   return (
       <Stack.Navigator  
-      initialRouteName="Storages"
+      initialRouteName="Storage"
       >
         <Stack.Screen 
-          name="Storages"
-          component={Storages}
+          name="Storage"
+          component={Storage}
           options={{ header: () => null }} 
         />
         <Stack.Screen 
           name="AddDishes"
           component={AddDishes}
+          options={{ header: () => null }} 
+        />
+        <Stack.Screen 
+          name="UpdateDishes"
+          component={UpdateDishes}
           options={{ header: () => null }} 
         />
       </Stack.Navigator>

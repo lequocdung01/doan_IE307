@@ -4,12 +4,12 @@ import axios from 'axios';
 import FlatSL from '../components/FlastSL';
 import { AirbnbRating } from 'react-native-ratings';
 
-const Search = ({ navigation }) => {
+const SearchMeal = ({ navigation, route }) => {
   const [dsthucdon, getdstd] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [dsuser, getuser] = useState([]);
   const [combinedData, setCombinedData] = useState([]);
-
+  const { items: mealTypes } = route.params;
 
   const getapithucdon = async () => {
     try {
@@ -18,7 +18,7 @@ const Search = ({ navigation }) => {
     } catch (error) {
     }
   };
-
+  const filteredData = combinedData.filter(item => mealTypes.includes(item.mealType));
   useEffect(() => {
     getapithucdon();
   }, []);
@@ -51,7 +51,6 @@ const Search = ({ navigation }) => {
     combineData();
   }, [dsuser, dsthucdon]);
 
-
   const filterData = (item) => {
     if (searchInput === "") {
       return null;
@@ -70,8 +69,8 @@ const Search = ({ navigation }) => {
             <View style={styles.postHeadNew}>
               <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNjuAlP67tv7QzTpcc--fy9UnBSM3JszDFCw&usqp=CAU' }} style={styles.projectImage}></Image>
               <Text style={styles.textNew}>{item.user && item.user.name
-                    ? `${item.user.name.lastname} ${item.user.name.firstname}`
-                    : 'Unknown User'}</Text>
+                ? `${item.user.name.lastname} ${item.user.name.firstname}`
+                : 'Unknown User'}</Text>
             </View>
             <Text style={styles.postTextNew}>{item.foodName}</Text>
 
@@ -112,24 +111,47 @@ const Search = ({ navigation }) => {
       />
       <View style={styles.content}>
         <View>
-          <Text style={styles.textHeadList}>Khám phá xem thứ gì đang trong mùa nào!</Text>
+          <Text style={styles.textHeadList}>Món ăn của: </Text>
 
           <View style={styles.row}>
 
             <FlatList
-              data={combinedData}
-              horizontal={true}
+              scrollEnabled={false}
+              data={filteredData}
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
-                <TouchableOpacity style={styles.itemListDiscover} >
-                  <ImageBackground source={{ uri: item.foodPhoto }} style={styles.postImageThem} imageStyle={{ borderRadius: 15 }}>
-                    <Text style={styles.textListThem}>{item.foodName}</Text>
-                  </ImageBackground>
+                <TouchableOpacity style={styles.postNew} onPress={() => navigation.navigate('BaiViet',
+                  {
+                    id: item._id, name: item.foodName, Photo: item.foodPhoto, Processing: item.foodProcessing,
+                    Ingredients: item.foodIngredients, Time: item.cookingTime, Feel: item.feel, FoodRations: item.foodRations
+                  })}>
 
-                  <FlatSL row={"3"} data={dsthucdon} columns={"3"} />
-                </TouchableOpacity >
+                  <View style={styles.headerPostNew}>
+                    <Image source={{ uri: item.foodPhoto }} style={styles.postImageNew}>
+                    </Image>
+                    <View style={styles.postHeadNew}>
+                      <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNjuAlP67tv7QzTpcc--fy9UnBSM3JszDFCw&usqp=CAU' }} style={styles.projectImage}></Image>
+                      <Text style={styles.textNew}>{item.user && item.user.name
+                        ? `${item.user.name.lastname} ${item.user.name.firstname}`
+                        : 'Unknown User'}</Text>
+                    </View>
+                    <Text style={styles.postTextNew}>{item.foodName}</Text>
+                  </View>
+                  <View style={styles.interactiveContainer}>
+                    <AirbnbRating
+                      count={5}
+                      reviews={["Terrible", "Bad", "Meh", "OK", "Good", "Hmm...", "Very Good", "Wow", "Amazing", "Unbelievable", "Jesus"]}
+                      defaultRating={item.aveRating}
+                      size={14}
+                      showRating={false}
+                      isDisabled
+                    />
+                  </View>
+                </TouchableOpacity>
               )}
-              keyExtractor={(item) => item._id.toString()}
+              keyExtractor={(item) => item.id}
+
+              numColumns={2}
             />
 
           </View>
@@ -170,33 +192,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   content: {
-    marginBottom: 10
+    marginLeft: 25,
   },
   textHeadList: {
     fontSize: 18,
     fontWeight: "500",
     marginLeft: 5,
   },
-  itemListDiscover: {
-    flex: 1,
-    width: 300,
-    height: 220,
-    margin: 5,
-  },
   row: {
     flexDirection: 'row',
     marginTop: 10
-  },
-  postImageThem: {
-    width: '100%',
-    height: 110,
-    borderRadius: 50
-  },
-  textListThem: {
-    fontSize: 12,
-    marginTop: 70,
-    padding: 10,
-    color: 'white',
   },
   buttonTBN: {
     flexDirection: 'row',
@@ -255,7 +260,7 @@ const styles = StyleSheet.create({
   interactiveContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft:6,
+    paddingLeft: 6,
   },
   projectImage: {
     width: 30,
@@ -264,8 +269,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
     marginTop: 5,
+    marginRight: 5,
   },
-
 });
 
-export default Search;
+export default SearchMeal;

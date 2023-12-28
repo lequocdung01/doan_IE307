@@ -1,15 +1,47 @@
 // npm install @react-navigation/material-bottom-tabs react-native-paper react-native-vector-icons
-import React from 'react'
+import React,{useEffect} from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Home from './Home';
 import Search from './Search';
-import Storages from './Storages';
-import Profile from './Profile';
 import AuthStack from './authStack';
 import TopTabs from '../URL/TopTabs';
+import ProAuthStack from './profileURL';
+import StackHome from '../URL/StackHome';
+import { useAuth } from './AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import LoSign from '../URL/LoSign';
+import Login from './login';
+import TopTabProfile from '../URL/TopTabProfile';
+
+function Pro(){
+  const St = createStackNavigator ();
+  return(
+    <St.Navigator initialRouteName="ProAuthStackSrc">
+      <St.Screen name="LoginScreen" component={Login} options={{ headerShown: false }} />
+      <St.Screen name="ProAuthStackSrc" component={ProAuthStack} options={{ headerShown: false }} />    
+    </St.Navigator> 
+  )
+}
 const Main = () => {
   const Tab = createBottomTabNavigator();
+  const navigation = useNavigation();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress', (e) => {
+      if (!isAuthenticated) {
+        // Nếu người dùng chưa xác thực, hãy chuyển hướng đến màn hình đăng nhập
+        navigation.navigate('LoSign');
+        e.preventDefault(); // Ngăn chặn điều hướng mặc định của tab
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, isAuthenticated]);
+
+
+ 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -23,7 +55,7 @@ const Main = () => {
             iconName = 'search'
             size = focused ? 28 : 28
             color = focused ? '#4190f4' : '#808080'
-          } else if (route.name === 'StoragesScreen') {
+          } else if (route.name === 'Storages') {
             iconName = 'plus-circle'
             size = focused ? 28 : 28
             color = focused ? '#4190f4' : '#808080'
@@ -46,10 +78,15 @@ const Main = () => {
       })
       }
     >
-      <Tab.Screen name="Home" component={TopTabs} options={{ header: () => null }} />
+      <Tab.Screen name="Home" component={StackHome} options={{ header: () => null }} />
       <Tab.Screen name="Search" component={Search} options={{ header: () => null }} />
-      <Tab.Screen name="StoragesScreen" component={AuthStack} options={{ header: () => null }} />
-      <Tab.Screen name="Profile" component={Profile} options={{ header: () => null }} />
+      <Tab.Screen
+        name="Storages"
+        component={isAuthenticated ? AuthStack : LoSign} // Không render gì cả nếu chưa xác thực
+        options={{ header: () => null }}
+      />
+      <Tab.Screen name="ProfileScreen" component={isAuthenticated ? TopTabProfile : Pro} options={{ header: () => null }} />
+      
     </Tab.Navigator>
   );
 }

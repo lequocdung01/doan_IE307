@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image,TouchableOpacity, ScrollView,ImageBackground,Button,FlatList,TextInput } from 'react-native';
 
 
-const FlatSL = ({row,data,columns}) => {
+const FlatSL = ({row,data,columns,toggleExerciseSelection}) => {
   
   const itemsPerRow = 1;
   const rows = [];
@@ -14,14 +14,15 @@ const FlatSL = ({row,data,columns}) => {
   
   return (
     <FlatList
+          scrollEnabled={false}
           data = {rows}
           showsHorizontalScrollIndicator={false}
           renderItem = { ({item}) => (
-          <TouchableOpacity  style={styles.itemListThem} onPress={() => toggleExerciseSelection(item.type)}>
+          <TouchableOpacity  style={styles.itemListThem} onPress={() => toggleExerciseSelection}>
           {item.map((rowData) => (
                     <View  key={rowData.id}>
-                      <ImageBackground source={{uri:rowData.contenImange}} style={styles.postImageThem} imageStyle={{ borderRadius: 15}}> 
-                        <Text style={styles.textListThem}>{rowData.type}</Text>
+                      <ImageBackground source={{uri:rowData.foodPhoto}} style={styles.postImageThem} imageStyle={{ borderRadius: 15}}> 
+                        <Text style={styles.textListThem}>{rowData.foodName}</Text>
                       </ImageBackground>
                       
                     </View>
@@ -48,8 +49,8 @@ const styles = StyleSheet.create({
     borderRadius:50
   },
   textListThem:{
-    fontSize:12,
-    marginTop:70,
+    fontSize:13,
+    marginTop:55,
     padding:10,
     color:'white',
   },
